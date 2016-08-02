@@ -1,0 +1,59 @@
+drop table if exists Ek_atte;
+create table Ek_atte (
+EKATTE VARCHAR(5) PRIMARY KEY ,
+T_V_M varchar(4) ,
+NAME VARCHAR(25),
+OBLAST VARCHAR(3) ,
+OBSTINA VARCHAR(5),
+KMETSTVO VARCHAR(8),
+KIND varchar(1),
+CATEGORY VARCHAR(1),
+ALTITUDE VARCHAR(1),
+DOCUMENT VARCHAR(4),
+TSB VARCHAR(4),
+ABC VARCHAR(4)
+);
+
+
+
+CREATE TABLE Ek_kmet(
+KMETSTVO CHAR(8) PRIMARY KEY ,
+NAME CHAR(25),
+CENTER CHAR(5),
+DOCUMENT CHAR(4),
+CATEGORY CHAR(1) 
+);
+
+CREATE TABLE Ek_obl(
+OBLAST 	VARCHAR(3) PRIMARY KEY,
+EKATTE VARCHAR(5),
+NAME VARCHAR(25),
+REGION varchar(5),
+DOCUMENT VARCHAR(4),
+ABC VARCHAR(3)
+);
+
+
+CREATE TABLE Ek_obst(
+OBSTINA CHAR(5) PRIMARY KEY,
+EKATTE CHAR(5),
+NAME CHAR(25),
+CATEGORY CHAR(1),
+DOCUMENT CHAR(4),
+ABC CHAR(3),
+OBLAST CHAR(3)
+);
+
+
+ALTER TABLE Ek_atte
+ADD constraint foreign key (OBSTINA) references Ek_obst(OBSTINA) ;
+ALTER TABLE Ek_obst
+ADD constraint foreign key (OBLAST) references Ek_obL(OBLAST);
+
+
+
+USE EKATTE;
+LOAD DATA local INFILE '/home/archubuntu/Downloads/EKATTE SQL/obst.csv' into table EKATTE.Ek_obst
+CHARACTER SET utf8
+	fields terminated by ';'  
+lines terminated by '\n'; 
