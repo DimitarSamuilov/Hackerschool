@@ -1,0 +1,43 @@
+
+<?php 
+	function API(){
+	    
+		$sqldate;
+		$db= new mysqli('localhost','wordpressuser','password','wordpress');
+		if($db->connect_errno > 0){
+   		die('Unable to connect to database [' . $db->connect_error . ']');
+		}
+		if(!$db->set_charset("utf8")){
+		die ('charset error '.$db->error.'<br>');
+		}
+		$query=$db->prepare("call insertInformation1(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);");	
+		$lon=-180;
+		$lat=-180;
+        $count=0;
+		while($count<=200){
+			//while($lat<=180){
+	$request='http://api.openweathermap.org/data/2.5/find?lat='.$lat.'&lon='.$lon.'&cnt=10&APPID=key';
+	$json= file_get_contents($request, true);
+	$result=json_decode($json,true);
+	foreach($result['list'] as $temp)
+	{	
+        $sqldate=gmdate("Y-m-d|H:i:s", $temp[dt]);
+        $sqlsplit=explode("|",$sqldate);
+		$query->bind_param( 'ddsdsddddss', $temp[coord][lon],$temp[coord][lat],$temp[weather][main],$temp[main][temp],$temp[name] ,$temp[wind][speed],$temp[clouds][all],$temp[main][humidity],$temp[main][pressure],$sqlsplit[0],$sqlsplit[1]);
+		$query->execute();
+		$sqldate=null;
+        //echo 'date'.$sqlsplit[0].'time'.$sqlsplit[1];
+	}
+		//$lat+=1;
+			//}
+		//$lon+=1;
+		//$lat=-180;
+            $count++;
+         $lon=rand(-180,180);
+         $lat=rand(-180,180);
+		}
+		
+	}
+	 API();
+	echo 'Database update successful';
+	?>
